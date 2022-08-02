@@ -2,11 +2,12 @@
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const date = require(__dirname + "/date.js");
 
 const app = express();
 
-let items = ["Buy Food", "Cook Food", "Eat Food"];
-let workItems = [];
+const items = ["Buy Food", "Cook Food", "Eat Food"];
+const workItems = [];
 
 app.set("view engine", "ejs");
 
@@ -15,15 +16,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("Public"));
 
+
+// Recupère la date formattée et a
 app.get("/", function(req, res) {
 
-  let today = new Date();
-  let options = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  };
-  let day = today.toLocaleDateString("fr", options);
+  const day = date.getDate();
 
   res.render("list", {
     listTitle: day,
@@ -33,7 +30,7 @@ app.get("/", function(req, res) {
 });
 
 app.post("/", function(req, res) {
-  let item = req.body.newItem;
+  const item = req.body.newItem;
 
   if (req.body.list === "Work") {
       workItems.push(item);
@@ -45,6 +42,8 @@ app.post("/", function(req, res) {
 
 });
 
+
+// restitue la page WORK - Render le titre WORKLIST et post les item dans workITEMS
 app.get("/work", function(req, res) {
   res.render("list", {
     listTitle: "Work List",
@@ -58,6 +57,7 @@ app.post("/work", function(req,res){
   res.redirect("/work");
 });
 
+//restitue la page ABOUT
 app.get("/about", function(req,res){
   res.render("about")
 });
